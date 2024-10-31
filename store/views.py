@@ -72,9 +72,9 @@ class CategoryListingView(ListView):
 
         cart = UserCart.objects.get(user=self.request.user)
 
-        # Calculate the total item count in the cart
-        item_count = sum(item.quantity for item in cart.cart_items.all())
+        item_count = sum(item.quantity for item in cart.items.all())
         context['item_count'] = item_count
+
         return context
 
 class ContactView(TemplateView):
