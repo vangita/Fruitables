@@ -20,14 +20,9 @@ class CartView(TemplateView):
 
 
 class CartAddItemView(LoginRequiredMixin, RedirectView):
-    # def get_error_url(self):
-    #     return self.request.META.get('HTTP_REFERER', reverse('error'))
-
     def get_success_url(self):
-        # Get the referrer URL if available, otherwise fallback to 'generic_category_listing'
         referer_url = self.request.META.get('HTTP_REFERER')
 
-        # If referer_url is None, reverse to 'generic_category_listing'
         return referer_url if referer_url else reverse('generic_category_listing')
 
     def get_redirect_url(self, *args, **kwargs):
@@ -43,6 +38,4 @@ class CartAddItemView(LoginRequiredMixin, RedirectView):
         else:
             cart_item.quantity = 1
             cart_item.save()
-
-        # Use the resolved success URL for redirection
         return self.get_success_url()

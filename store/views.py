@@ -63,11 +63,6 @@ class CategoryListingView(ListView):
         context['par_categories'] = Category.objects.filter(parent__isnull=True)
         context['tags'] = dict(Product.TAG_CHOICES)
 
-        # cart = UserCart.objects.get(user=self.request.user)
-        #
-        # item_count = sum(item.quantity for item in cart.items.all())
-        # context['item_count'] = item_count
-
         return context
 
 class ContactView(TemplateView):
