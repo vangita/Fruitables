@@ -70,7 +70,7 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Categories</a>
                                 <div class="dropdown-menu m-0 bg-secondary rounded-0">
                                     {% for category in par_categories %}
-                                    	<a href="{% url 'category_listing' category.slug %}" class="dropdown-item">{{category.name}}</a>
+                                    	<a href="{% url 'category_listing' category.slug %}" class="dropdown-item"></a>
                                     {% endfor %}
                                 </div>
                             </div>
