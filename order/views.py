@@ -1,12 +1,48 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect
+from django.views.generic import TemplateView, RedirectView
+
+from store.models import Product
+from order.models import UserCart, CartItem
+
 
 # Create your views here.
 
 
-def checkout_view(request):
-    return render(request, 'checkout.html')
+
+class CheckoutView(TemplateView):
+    template_name = 'checkout.html'
 
 
-def cart_view(request):
-    return render(request, 'cart.html')
+class CartView(TemplateView):
+    template_name = 'cart.html'
+
+
+class CartAddItemView(LoginRequiredMixin, RedirectView):
+    # def get_error_url(self):
+    #     return self.request.META.get('HTTP_REFERER', reverse('error'))
+
+    def get_success_url(self):
+        # Get the referrer URL if available, otherwise fallback to 'generic_category_listing'
+        referer_url = self.request.META.get('HTTP_REFERER')
+
+        # If referer_url is None, reverse to 'generic_category_listing'
+        return referer_url if referer_url else reverse('generic_category_listing')
+
+    def get_redirect_url(self, *args, **kwargs):
+        product_id = kwargs.get('product_id')
+        product = get_object_or_404(Product, id=product_id)
+        cart, created = UserCart.objects.get_or_create(user=self.request.user)
+
+        cart_item, item_created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+        if not item_created:
+            cart_item.quantity += 1
+            cart_item.save()
+        else:
+            cart_item.quantity = 1
+            cart_item.save()
+
+        # Use the resolved success URL for redirection
+        return self.get_success_url()

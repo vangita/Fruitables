@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'user.middleware.UpdateLastActivityMiddleware'
 ]
 
 ROOT_URLCONF = 'djangoProject.urls'
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'store.context_processors.global_context',
             ],
         },
     },
@@ -128,7 +130,8 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
 
-# AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'user.User'
+# LOGIN_URL = '/accounts/login/'
 
 
 # Default primary key field type

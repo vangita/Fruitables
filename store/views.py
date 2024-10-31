@@ -1,6 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404 , redirect
 from django.views.generic import TemplateView, ListView, DetailView
-from django.core.paginator import Paginator
+
+from order.models import UserCart
 from store.models import Category, Product
 
 
@@ -12,15 +13,6 @@ class HomeView(TemplateView):
         context['products'] = Product.objects.all()
         context['par_categories'] = Category.objects.filter(parent__isnull=True)
         return context
-
-
-class ContactView(TemplateView):
-    template_name = 'contact.html'
-
-
-from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView
-from store.models import Category, Product
 
 
 class CategoryListingView(ListView):
@@ -57,13 +49,13 @@ class CategoryListingView(ListView):
 
         return queryset
 
-    def post(self, request, *args, **kwargs):
-        if 'cart_count' not in request.session:
-            request.session['cart_count'] = 0
-        request.session['cart_count'] += 1
-        request.session.modified = True
-
-        return redirect(request.path)
+    # def post(self, request, *args, **kwargs):
+    #     if 'cart_count' not in request.session:
+    #         request.session['cart_count'] = 0
+    #     request.session['cart_count'] += 1
+    #     request.session.modified = True
+    #
+    #     return redirect(request.path)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,9 +70,15 @@ class CategoryListingView(ListView):
         context['par_categories'] = Category.objects.filter(parent__isnull=True)
         context['tags'] = dict(Product.TAG_CHOICES)
 
-        context['cart_count'] = self.request.session.get('cart_count', 0)
+        cart = UserCart.objects.get(user=self.request.user)
+
+        # Calculate the total item count in the cart
+        item_count = sum(item.quantity for item in cart.cart_items.all())
+        context['item_count'] = item_count
         return context
 
+class ContactView(TemplateView):
+    template_name = 'contact.html'
 
 class ProductDetailView(TemplateView):
     template_name = 'shop-detail.html'

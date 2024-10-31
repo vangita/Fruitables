@@ -4,9 +4,9 @@ from store.models import Product
 from user.models import User
 
 
-# Create your models here.
 class UserCart(models.Model):
       user = models.OneToOneField(User, on_delete=models.CASCADE)
+      cart = models.ManyToManyField(Product, through='CartItem')
 
       def __str__(self):
             return f"Cart of {self.user.username}"

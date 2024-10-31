@@ -8,6 +8,7 @@ from .views import (
     Custom404View,
 )
 
+
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('product/', ProductDetailView.as_view(), name='product_detail'),
